@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>TaskVerse</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f4f5fb;--card:#fff;--tx:#1d1f2e;--mu:#7b7f96;--ac:#6c5ce7;--ac2:#a29bfe;--ok:#00b894;--wa:#fdcb6e;--er:#e17055;--bd:#e8e9f3;--r:20px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#12131c;--card:#1c1e2b;--tx:#eceefb;--mu:#8e92ad;--bd:#2a2d3f;--ac:#8c7ffb}}
+:root[data-theme=dark]{--bg:#12131c;--card:#1c1e2b;--tx:#eceefb;--mu:#8e92ad;--bd:#2a2d3f;--ac:#8c7ffb}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+#app{display:flex;min-height:100vh}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:var(--card);border-top:1px solid var(--bd);padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));z-index:5}
+nav button{background:none;border:0;color:var(--mu);font:600 11px inherit;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 12px;border-radius:14px}
+nav button span{font-size:20px}nav button.on{color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,transparent)}
+.logo{display:none;font-weight:800;font-size:22px;color:var(--ac);padding:8px 12px 20px}
+main{flex:1;max-width:760px;margin:0 auto;padding:20px 16px 110px;width:100%}
+@media(min-width:900px){nav{position:sticky;top:0;height:100vh;flex-direction:column;justify-content:flex-start;width:210px;border-top:0;border-right:1px solid var(--bd);padding:24px 14px;gap:6px}
+nav button{flex-direction:row;font-size:15px;gap:12px;width:100%;justify-content:flex-start}.logo{display:block}main{padding-bottom:40px}}
+h1{margin:0 0 4px;font-size:26px}h2{font-size:17px;margin:22px 0 10px}.mu{color:var(--mu);font-size:14px}
+.card{background:var(--card);border-radius:var(--r);padding:18px;margin-bottom:14px;box-shadow:0 4px 18px rgba(80,70,160,.07);border:1px solid var(--bd);animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.hero{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:0}
+.bar{height:12px;background:rgba(127,127,160,.2);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .5s}
+.hero .bar{background:rgba(255,255,255,.3)}.hero .bar i{background:#fff}
+.big{font-size:44px;font-weight:800;line-height:1}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.grid .card{text-align:center;margin:0;padding:14px}.grid b{font-size:24px;display:block}
+.task{display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--card);border:1px solid var(--bd);border-radius:16px;margin-bottom:10px;animation:in .25s}
+.task input{width:22px;height:22px;accent-color:var(--ac);margin-top:2px;cursor:pointer}.task.done .t{text-decoration:line-through;color:var(--mu)}
+.task .b{flex:1;min-width:0}.t{font-weight:600;word-break:break-word}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac);margin:5px 5px 0 0}
+.tag.high{background:color-mix(in srgb,var(--er) 18%,transparent);color:var(--er)}.tag.medium{background:color-mix(in srgb,var(--wa) 25%,transparent);color:#b7791f}
+.ib{background:none;border:0;cursor:pointer;color:var(--mu);padding:8px;border-radius:10px;display:grid;place-items:center;transition:.15s}.ib svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ib:hover{color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,transparent)}.ib.del:hover{color:var(--er);background:color-mix(in srgb,var(--er) 14%,transparent)}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:14px;padding:11px 18px;font:600 14px inherit;font-family:inherit;cursor:pointer}.btn.g{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.seg{display:flex;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:3px;gap:2px}.seg button{border:0;background:none;color:var(--mu);padding:8px 14px;border-radius:11px;font:600 13px inherit;font-family:inherit;cursor:pointer}.seg button.on{background:var(--ac);color:#fff}
+.fab{position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;font-size:28px;border:0;background:var(--ac);color:#fff;box-shadow:0 8px 20px rgba(108,92,231,.45);cursor:pointer;z-index:6}
+@media(min-width:900px){.fab{bottom:28px;right:32px}}
+.chart{display:flex;gap:8px;align-items:flex-end;height:150px}.chart div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11px;color:var(--mu);gap:4px}
+.chart i{width:100%;max-width:36px;background:linear-gradient(var(--ac2),var(--ac));border-radius:8px 8px 4px 4px;min-height:3px;transition:height .5s}.chart.sm{height:80px;gap:3px}.chart.sm i{border-radius:3px}
+input,select,textarea{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:15px inherit;font-family:inherit;margin:4px 0 12px}
+label{font-size:13px;font-weight:600;color:var(--mu)}
+dialog{border:0;border-radius:24px;background:var(--card);color:var(--tx);width:min(440px,92vw);padding:22px}dialog::backdrop{background:rgba(10,10,30,.5)}
+.av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;display:grid;place-items:center;font-size:30px;font-weight:800}
+.badge{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)}.badge:last-child{border:0}.badge.lock{opacity:.4;filter:grayscale(1)}.badge span{font-size:28px}
+.pill{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--bd)}
+.av.sm{width:42px;height:42px;font-size:18px;position:relative;flex:none}.dot{position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:50%;background:var(--ok);border:2px solid var(--card)}nav button{padding:6px 8px}.empty{text-align:center;color:var(--mu);padding:30px 10px}
+</style></head><body>
+<div id="app"><nav id="nav"></nav><main id="main"></main></div>
+<button class="fab" id="fab" title="New task" aria-label="New task">+</button>
+<dialog id="dlg"><form method="dialog" id="f">
+<h2 id="dt" style="margin-top:0">New task</h2>
+<label>Title</label><input name="title" required maxlength="120">
+<label>Description</label><textarea name="desc" rows="2" maxlength="500"></textarea>
+<div class="row" style="flex-wrap:nowrap"><div style="flex:1"><label>Priority</label><select name="prio"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div>
+<div style="flex:1"><label>Category</label><select name="cat"><option>Personal</option><option>Work</option><option>Study</option><option>Health</option><option>Other</option></select></div></div>
+<div class="row" style="flex-wrap:nowrap"><div style="flex:1"><label>Date</label><input type="date" name="date" required></div>
+<div style="flex:1"><label>Deadline</label><input type="time" name="due"></div></div>
+<div class="row" style="justify-content:flex-end"><button type="button" class="btn g" id="cx">Cancel</button><button class="btn">Save</button></div></form></dialog>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const addDays=(s,n)=>{const d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return iso(d)};
+const today=()=>iso(new Date());
+const pct=(d,t)=>t?Math.floor(d/t*100):0; // floor: never 100% until every task is done
+let tasks=[],meta={name:'You',goal:3,notes:'',theme:'auto'},view='tasks',sel=today(),filter='all',hrange='week',editing=null,db=null,memOnly=false;
+// ---- IndexedDB ----
+function openDB(){return new Promise((res,rej)=>{try{const r=indexedDB.open('taskverse',1);r.onupgradeneeded=()=>{r.result.createObjectStore('tasks',{keyPath:'id'});r.result.createObjectStore('meta')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
+const tx=(st,mode,fn)=>new Promise((res,rej)=>{if(!db)return res();const t=db.transaction(st,mode);const out=fn(t.objectStore(st));t.oncomplete=()=>res(out&&out.result);t.onerror=()=>rej(t.error)});
+const saveTask=t=>{t.updated=Date.now();t.dirty=1;return tx('tasks','readwrite',s=>s.put(t)).catch(()=>{memOnly=true})};
+const delTask=id=>tx('tasks','readwrite',s=>s.delete(id)).catch(()=>{});
+const saveMeta=()=>tx('meta','readwrite',s=>s.put(meta,'m')).catch(()=>{});
+async function load(){try{db=await openDB();tasks=await tx('tasks','readonly',s=>s.getAll())||[];const m=await tx('meta','readonly',s=>s.get('m'));if(m)meta={...meta,...m}}catch(e){memOnly=true}}
+// ---- helpers ----
+const on=d=>tasks.filter(t=>t.date===d);
+const stats=a=>{const d=a.filter(t=>t.done).length;return{t:a.length,d,p:a.length-d,pc:pct(d,a.length)}};
+const weekStart=d=>{const x=new Date(d+'T00:00:00');return addDays(d,-((x.getDay()+6)%7))};
+const streak=()=>{let n=0,d=today();if(!tasks.some(t=>t.done&&t.date===d))d=addDays(d,-1);while(tasks.some(t=>t.done&&t.date===d)){n++;d=addDays(d,-1)}return n};
+const fmt=(d,o)=>new Date(d+'T00:00:00').toLocaleDateString(undefined,o||{weekday:'short',month:'short',day:'numeric'});
+function badges(){const done=tasks.filter(t=>t.done).length,s=streak();
+const perfect=[...new Set(tasks.map(t=>t.date))].some(d=>{const x=stats(on(d));return x.t>=3&&x.pc===100});
+return[['🎯','First Task Completed',done>=1],['🔟','10 Tasks Completed',done>=10],['💯','100 Tasks Completed',done>=100],['🔥','7-Day Consistency',s>=7],['🏆','Perfect Day (3+ tasks, 100%)',perfect]]}
+// ---- views ----
+const tabs=[['tasks','✅','Tasks'],['history','📊','History'],['friends','👥','Friends'],['messages','💬','Messages'],['profile','👤','Profile']];
+function nav(){$('#nav').innerHTML='<div class="logo">TaskVerse</div>'+tabs.map(([k,i,l])=>`<button data-go="${k}" class="${view===k?'on':''}"><span>${i}</span>${l}</button>`).join('')}
+function taskHTML(t){return`<div class="task ${t.done?'done':''}"><input type="checkbox" data-tg="${t.id}" ${t.done?'checked':''} aria-label="Complete"><div class="b"><div class="t">${esc(t.title)}</div>${t.desc?`<div class="mu">${esc(t.desc)}</div>`:''}<span class="tag ${t.prio}">${t.prio}</span><span class="tag">${esc(t.cat)}</span>${t.due?`<span class="tag">⏰ ${esc(t.due)}</span>`:''}</div><button class="ib" data-ed="${t.id}" title="Edit" aria-label="Edit task"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button><button class="ib del" data-rm="${t.id}" title="Delete" aria-label="Delete task"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button></div>`}
+function weekChart(d){const ws=weekStart(d);const days=[...Array(7)].map((_,i)=>addDays(ws,i));return{days,html:`<div class="chart">${days.map(x=>{const s=stats(on(x));return`<div title="${s.d}/${s.t}"><span>${s.t?s.pc+'%':''}</span><i style="height:${s.pc*1.0}px"></i>${fmt(x,{weekday:'narrow'})}</div>`}).join('')}</div>`}}
+function home(){const td=today(),s=stats(on(td)),wk=weekChart(td),ws=stats(wk.days.flatMap(on));const h=new Date().getHours();
+return`<div class="row"><div><h1>${h<12?'Good morning':h<18?'Good afternoon':'Good evening'}, ${esc(meta.name)} 👋</h1><div class="mu">${fmt(td,{weekday:'long',month:'long',day:'numeric',year:'numeric'})}</div></div><span class="pill">${navigator.onLine?'🟢 Online':'⚪ Offline'}</span></div>
+<div class="card hero" style="margin-top:18px"><div class="mu" style="color:#ffffffc0">Today's progress</div><div class="big">${s.pc}%</div><div class="bar" style="margin:14px 0 8px"><i style="width:${s.pc}%"></i></div><div>${s.d} of ${s.t} tasks done · daily goal ${meta.goal} ${s.d>=meta.goal?'✅':''}</div></div>
+<div class="grid"><div class="card"><b>${s.t}</b><span class="mu">Total</span></div><div class="card"><b>${s.d}</b><span class="mu">Done</span></div><div class="card"><b>${s.p}</b><span class="mu">Pending</span></div></div>
+<h2>This week · ${ws.pc}% complete</h2><div class="card">${wk.html}</div>
+<div class="card row"><div><b>🔥 ${streak()}-day streak</b><div class="mu">${badges().filter(b=>b[2]).length}/5 badges earned</div></div><button class="btn" data-new>Quick task</button></div>
+<h2>Today's pending</h2>${on(td).filter(t=>!t.done).map(taskHTML).join('')||'<div class="empty">Nothing pending. Add a task!</div>'}`}
+function tasksV(){const all=on(sel),s=stats(all);const l=all.filter(t=>filter==='all'||(filter==='done')===t.done).sort((a,b)=>a.done-b.done||(a.due||'99').localeCompare(b.due||'99'));
+return`<h1>Tasks</h1><div class="row" style="margin:10px 0 16px"><div class="row"><button class="btn g" data-day="-1">‹</button><input type="date" value="${sel}" data-pick style="width:auto;margin:0"><button class="btn g" data-day="1">›</button></div><div class="seg">${['all','pending','done'].map(f=>`<button data-fl="${f}" class="${filter===f?'on':''}">${f}</button>`).join('')}</div></div>
+<div class="card"><div class="row"><b>${fmt(sel,{weekday:'long',month:'short',day:'numeric'})}</b><b>${s.pc}%</b></div><div class="bar" style="margin:10px 0"><i style="width:${s.pc}%"></i></div><div class="mu">Total ${s.t} · Completed ${s.d} · Pending ${s.p}</div></div>
+${l.map(taskHTML).join('')||'<div class="empty">No tasks here yet.</div>'}`}
+function historyV(){let body='';
+if(hrange==='day'){const a=on(sel),s=stats(a);body=`<div class="card"><b>${s.pc}% complete</b><div class="bar" style="margin:10px 0"><i style="width:${s.pc}%"></i></div><div class="mu">${s.d} completed · ${s.p} incomplete</div></div>${a.map(taskHTML).join('')||'<div class="empty">No tasks on this date.</div>'}`}
+else if(hrange==='week'){const w=weekChart(sel),s=stats(w.days.flatMap(on));body=`<div class="grid"><div class="card"><b>${s.d}</b><span class="mu">Completed</span></div><div class="card"><b>${s.p}</b><span class="mu">Pending</span></div><div class="card"><b>${s.pc}%</b><span class="mu">Rate</span></div></div><h2>${fmt(w.days[0])} – ${fmt(w.days[6])}</h2><div class="card">${w.html}</div>`+w.days.map(d=>{const x=stats(on(d));return`<div class="card row" style="padding:12px 16px"><span>${fmt(d)}</span><span class="mu">${x.d}/${x.t} · ${x.pc}%</span></div>`}).join('')}
+else{const ym=sel.slice(0,7),pd=new Date(ym+'-01T00:00:00');pd.setMonth(pd.getMonth()-1);const pm=iso(pd).slice(0,7);const cur=stats(tasks.filter(t=>t.date.startsWith(ym))),prev=stats(tasks.filter(t=>t.date.startsWith(pm)));
+const n=new Date(+ym.slice(0,4),+ym.slice(5),0).getDate();const bars=[...Array(n)].map((_,i)=>{const s=stats(on(ym+'-'+String(i+1).padStart(2,'0')));return`<div title="${i+1}: ${s.pc}%"><i style="height:${s.pc*.7}px"></i></div>`}).join('');
+const diff=cur.pc-prev.pc;body=`<div class="grid"><div class="card"><b>${cur.t}</b><span class="mu">Tasks</span></div><div class="card"><b>${cur.d}</b><span class="mu">Completed</span></div><div class="card"><b>${cur.pc}%</b><span class="mu">Rate</span></div></div><h2>${fmt(ym+'-01',{month:'long',year:'numeric'})} daily progress</h2><div class="card"><div class="chart sm">${bars}</div></div><div class="card">Compared to last month (${prev.pc}%): <b style="color:${diff>=0?'var(--ok)':'var(--er)'}">${diff>=0?'+':''}${diff} pts</b></div>`}
+return`<h1>History</h1><div class="row" style="margin:10px 0 16px"><input type="date" value="${sel}" data-pick style="width:auto;margin:0"><div class="seg">${['day','week','month'].map(f=>`<button data-hr="${f}" class="${hrange===f?'on':''}">${f}</button>`).join('')}</div></div>${body}`}
+function profileV(){const b=badges();return`<h1>Profile</h1><div class="card row" style="justify-content:flex-start;gap:16px"><div class="av">${esc((meta.name||'?')[0].toUpperCase())}</div><div><b style="font-size:20px">${esc(meta.name)}</b><div class="mu">${tasks.filter(t=>t.done).length} tasks completed · 🔥 ${streak()}</div></div></div>
+<div class="card"><label>Display name</label><input id="nm" value="${esc(meta.name)}" maxlength="30"><label>Daily goal (tasks)</label><input id="gl" type="number" min="1" max="50" value="${meta.goal}"><label>Theme</label><div class="seg" style="margin:6px 0 12px">${['auto','light','dark'].map(t=>`<button data-th="${t}" class="${meta.theme===t?'on':''}">${t}</button>`).join('')}</div><button class="btn" data-sp>Save profile</button></div>
+<h2>Notes</h2><div class="card"><textarea id="nt" rows="4" placeholder="Personal notes…">${esc(meta.notes)}</textarea><button class="btn" data-sn>Save notes</button></div>
+<h2>Achievements</h2><div class="card">${b.map(x=>`<div class="badge ${x[2]?'':'lock'}"><span>${x[0]}</span><div><b>${x[1]}</b><div class="mu">${x[2]?'Unlocked':'Locked'}</div></div></div>`).join('')}</div>
+<div class="card row"><div><b>Backup</b><div class="mu">${memOnly?'⚠️ Storage unavailable – data not saved':'Saved on this device (IndexedDB)'}</div></div><button class="btn g" data-ex>Export JSON</button></div>`}
+function render(){nav();$('#main').innerHTML={home,tasks:tasksV,history:historyV,friends:friendsV,messages:messagesV,profile:profileV}[view]();$('#fab').style.display=['tasks','history'].includes(view)?'':'none';if(view==='messages'&&S.chat)paintMsgs();applyTheme()}
+function applyTheme(){const r=document.documentElement;meta.theme==='auto'?r.removeAttribute('data-theme'):r.dataset.theme=meta.theme}
+// ---- actions ----
+function openDlg(t){editing=t||null;const f=$('#f');f.reset();$('#dt').textContent=t?'Edit task':'New task';f.date.value=t?t.date:(view==='tasks'||view==='history'?sel:today());if(t){f.title.value=t.title;f.desc.value=t.desc;f.prio.value=t.prio;f.cat.value=t.cat;f.due.value=t.due||''}$('#dlg').showModal()}
+$('#fab').onclick=()=>openDlg();$('#cx').onclick=()=>$('#dlg').close();
+$('#f').onsubmit=async e=>{const f=e.target,v=f.title.value.trim();if(!v){e.preventDefault();return}
+const d={title:v,desc:f.desc.value.trim(),prio:f.prio.value,cat:f.cat.value,date:f.date.value,due:f.due.value};
+if(editing)Object.assign(editing,d);else tasks.push({id:crypto.randomUUID(),done:false,created:Date.now(),...d});
+await saveTask(editing||tasks[tasks.length-1]);render()};
+document.addEventListener('click',async e=>{const g=e.target.closest('[data-go],[data-new],[data-rm],[data-ed],[data-day],[data-fl],[data-hr],[data-th],[data-sp],[data-sn],[data-ex]');if(!g)return;const q=k=>g.dataset[k];
+if(q('go')){view=q('go');if(view!=='messages')closeChat();render();scrollTo(0,0)}
+else if('new' in g.dataset)openDlg();
+else if(q('rm')){if(await ask('Delete this task?')){const id=q('rm');tasks=tasks.filter(t=>t.id!==id);await delTask(id);render()}}
+else if(q('ed'))openDlg(tasks.find(t=>t.id===q('ed')));
+else if(q('day')){sel=addDays(sel,+q('day'));render()}
+else if(q('fl')){filter=q('fl');render()}
+else if(q('hr')){hrange=q('hr');render()}
+else if(q('th')){meta.theme=q('th');await saveMeta();render()}
+else if('sp' in g.dataset){meta.name=$('#nm').value.trim()||'You';meta.goal=Math.max(1,+$('#gl').value||3);await saveMeta();render()}
+else if('sn' in g.dataset){meta.notes=$('#nt').value;await saveMeta();g.textContent='Saved ✓'}
+else if('ex' in g.dataset){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({meta,tasks},null,1)],{type:'application/json'}));a.download='taskverse-backup.json';a.click()}});
+document.addEventListener('change',async e=>{const t=e.target;
+if(t.dataset.tg){const k=tasks.find(x=>x.id===t.dataset.tg);k.done=t.checked;k.doneAt=t.checked?Date.now():null;await saveTask(k);render()}
+else if('pick' in t.dataset&&t.value){sel=t.value;render()}});
+addEventListener('online',()=>{initSocial();render()});addEventListener('offline',render);
+const askD=document.createElement('dialog');askD.innerHTML='<h2 id="aq" style="margin-top:0"></h2><div class="row" style="justify-content:flex-end"><button class="btn g" id="an">Cancel</button><button class="btn" id="ay" style="background:var(--er)">Delete</button></div>';document.body.appendChild(askD);
+const ask=(m,y='Delete')=>new Promise(r=>{$('#aq').textContent=m;$('#ay').textContent=y;const d=v=>{askD.close();r(v)};$('#ay').onclick=()=>d(true);$('#an').onclick=()=>d(false);askD.oncancel=()=>r(false);askD.showModal()});
+// ---- social (online only): friends, DMs, groups ----
+const S={db:null,user:null,me:null,fr:[],groups:[],pres:{},names:{},chat:null,msgs:[],unsub:null,err:'',q:'',hits:[],ready:false,init:false};
+const nm=id=>S.names[id]||'Someone';
+const isOn=id=>S.pres[id]&&Date.now()-S.pres[id]<75000;
+const fkey=(a,b)=>[a,b].sort().join('__');
+const other=f=>f.a===S.me?f.b:f.a;
+async function resolve(ids){const need=[...new Set(ids)].filter(i=>i&&!S.names[i]);if(!need.length||!S.user)return;try{const p=await S.user.profiles(need);for(const i of need)S.names[i]=(p[i]&&p[i].name)||''}catch(e){}}
+function soft(){if(S.chat&&view==='messages'){paintMsgs();return}const a=document.activeElement;if(a&&a.matches&&a.matches('#main input,#main textarea'))return;if(view==='friends'||view==='messages')render()}
+async function initSocial(){
+  if(S.init||!navigator.onLine)return;
+  if(!window.claude||!claude.use){S.err='Open the published TaskVerse page to use Friends and Messages.';return}
+  S.init=true;
+  try{
+    S.db=await claude.use('db');S.user=await claude.use('user');
+    if(!S.db||!S.user){S.init=false;S.err='Sign in to claude.ai to use Friends and Messages.';render();return}
+    S.me=await S.user.id();if(!S.me){S.init=false;S.err='Could not identify your account.';render();return}
+    S.names[S.me]=(await S.user.me()).name||'You';S.ready=true;
+    S.db.collection('friendships').onSnapshot(async s=>{S.fr=s.docs.map(d=>({id:d.id,...d.data()})).filter(f=>f.a===S.me||f.b===S.me);await resolve(S.fr.flatMap(f=>[f.a,f.b]));soft()});
+    S.db.collection('groups').onSnapshot(async s=>{S.groups=s.docs.map(d=>({id:d.id,...d.data()})).filter(g=>(g.members||[]).includes(S.me));await resolve(S.groups.flatMap(g=>g.members));soft()});
+    S.db.collection('presence').onSnapshot(s=>{S.pres={};s.docs.forEach(d=>S.pres[d.id]=d.data().ts);soft()});
+    const beat=()=>{if(navigator.onLine&&!document.hidden)S.db.collection('presence').doc(S.me).set({ts:Date.now()}).catch(()=>{})};
+    beat();setInterval(beat,30000);
+    setInterval(()=>{if(view==='friends')soft()},30000);
+    render();
+  }catch(e){S.init=false;S.err='Could not connect. Try again later.';render()}
+}
+function gate(t){
+  if(!navigator.onLine)return`<h1>${t}</h1><div class="card empty">📴 You’re offline.<br>${t} needs an internet connection. Tasks, History and Profile still work.</div>`;
+  if(!S.ready)return`<h1>${t}</h1><div class="card empty">${esc(S.err||'Connecting…')}</div>`;return''}
+const av=id=>`<div class="av sm">${esc((nm(id)||'?')[0].toUpperCase())}${isOn(id)?'<u class="dot"></u>':''}</div>`;
+function row(id,btns){return`<div class="task" style="align-items:center">${av(id)}<div class="b"><div class="t">${esc(nm(id))}</div><div class="mu">${isOn(id)?'🟢 Online':'Offline'}</div></div>${btns}</div>`}
+function friendsV(){const g=gate('Friends');if(g)return g;
+  const inc=S.fr.filter(f=>f.status==='pending'&&f.from!==S.me),out=S.fr.filter(f=>f.status==='pending'&&f.from===S.me),fl=S.fr.filter(f=>f.status==='accepted');
+  const hits=S.hits.map(h=>{const f=S.fr.find(x=>x.id===fkey(S.me,h.id));return row(h.id,f?`<span class="pill">${f.status==='accepted'?'Friends':'Pending'}</span>`:`<button class="btn" data-s="add" data-v="${h.id}">Add</button>`)}).join('');
+  return`<h1>Friends</h1><div class="card"><label>Find people</label><div class="row" style="flex-wrap:nowrap"><input id="fq" placeholder="Search by name…" value="${esc(S.q)}" style="margin:0"><button class="btn" data-s="search">Search</button></div>${hits?'<div style="margin-top:12px">'+hits+'</div>':(S.q?'<div class="mu" style="margin-top:10px">No people found.</div>':'')}</div>`
+  +(inc.length?'<h2>Requests</h2>'+inc.map(f=>row(f.from,`<button class="btn" data-s="acc" data-v="${f.id}">Accept</button><button class="btn g" data-s="del" data-v="${f.id}">Reject</button>`)).join(''):'')
+  +(out.length?'<h2>Sent requests</h2>'+out.map(f=>row(other(f),`<button class="btn g" data-s="del" data-v="${f.id}">Cancel</button>`)).join(''):'')
+  +`<h2>Your friends (${fl.length})</h2>`+(fl.map(f=>row(other(f),`<button class="btn" data-s="dm" data-v="${other(f)}">Message</button><button class="ib del" data-s="rm" data-v="${f.id}" title="Remove friend">✖</button>`)).join('')||'<div class="empty">No friends yet. Search above!</div>')}
+function messagesV(){const g=gate('Messages');if(g)return g;
+  if(S.chat)return`<div class="row" style="flex-wrap:nowrap"><div class="row" style="flex-wrap:nowrap;justify-content:flex-start"><button class="btn g" data-s="back">‹</button><div style="min-width:0"><b>${esc(S.chat.title)}</b><div class="mu" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(S.chat.sub||'')}</div></div></div>${S.chat.type==='group'?'<button class="btn g" data-s="leave">Leave</button>':''}</div><div class="card" id="msgs" style="height:55vh;overflow-y:auto;margin-top:14px"></div><div class="row" style="flex-wrap:nowrap"><input id="msgin" maxlength="1000" placeholder="Message…" style="margin:0" autocomplete="off"><button class="btn" data-s="send">Send</button></div>`;
+  const fl=S.fr.filter(f=>f.status==='accepted').map(other);
+  return`<div class="row"><h1>Messages</h1><button class="btn" data-s="ng">＋ New group</button></div>
+  <h2>Groups</h2>${S.groups.map(gr=>`<div class="task" data-s="grp" data-v="${gr.id}" style="cursor:pointer;align-items:center"><div class="av sm">👥</div><div class="b"><div class="t">${esc(gr.name)}</div><div class="mu">${gr.members.length} members</div></div></div>`).join('')||'<div class="empty">No groups yet.</div>'}
+  <h2>Direct messages</h2>${fl.map(id=>`<div class="task" data-s="dm" data-v="${id}" style="cursor:pointer;align-items:center">${av(id)}<div class="b"><div class="t">${esc(nm(id))}</div><div class="mu">${isOn(id)?'🟢 Online':'Offline'}</div></div></div>`).join('')||'<div class="empty">Add friends first to start a chat.</div>'}`}
+function openChat(c){closeChat();S.chat=c;S.msgs=[];render();
+  S.unsub=S.db.collection('messages').where('chat','==',c.id).limit(300).onSnapshot(async s=>{S.msgs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.ts-b.ts);await resolve(S.msgs.map(m=>m.from));paintMsgs()})}
+function closeChat(){if(S.unsub)S.unsub();S.unsub=null;S.chat=null}
+function paintMsgs(){const el=$('#msgs');if(!el||!S.chat)return;const bottom=el.scrollHeight-el.scrollTop-el.clientHeight<80;
+  el.innerHTML=S.msgs.map(m=>{const me=m.from===S.me;return`<div style="display:flex;justify-content:${me?'flex-end':'flex-start'};margin-bottom:8px"><div style="max-width:78%;padding:9px 13px;border-radius:16px;background:${me?'var(--ac)':'var(--bg)'};color:${me?'#fff':'var(--tx)'};word-break:break-word">${S.chat.type==='group'&&!me?`<div style="font-size:11px;font-weight:700;opacity:.7">${esc(nm(m.from))}</div>`:''}${esc(m.text)}<div style="font-size:10px;opacity:.6;text-align:right">${new Date(m.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div></div>`}).join('')||'<div class="empty">Say hi 👋</div>';
+  if(bottom)el.scrollTop=el.scrollHeight}
+async function sendMsg(){const i=$('#msgin');if(!i||!S.chat)return;const text=i.value.trim();if(!text)return;if(!navigator.onLine){alert('You are offline. Chat needs internet.');return}
+  i.value='';try{await S.db.collection('messages').doc(crypto.randomUUID()).set({chat:S.chat.id,from:S.me,text,ts:Date.now()})}catch(e){i.value=text;alert('Message failed: '+(e.message||e))}}
+document.body.insertAdjacentHTML('beforeend','<dialog id="gd"><form method="dialog" id="gf"><h2 style="margin-top:0">New group</h2><label>Group name</label><input name="gn" required maxlength="40"><label>Add friends</label><div id="gm"></div><div class="row" style="justify-content:flex-end;margin-top:12px"><button type="button" class="btn g" id="gx">Cancel</button><button class="btn">Create</button></div></form></dialog>');
+$('#gx').onclick=()=>$('#gd').close();
+$('#gf').onsubmit=async e=>{const f=e.target,m=[S.me,...[...f.querySelectorAll('input[name=m]:checked')].map(i=>i.value)];
+  if(m.length<2||!f.gn.value.trim()){e.preventDefault();alert('Pick at least one friend.');return}
+  try{await S.db.collection('groups').doc(crypto.randomUUID()).set({name:f.gn.value.trim(),members:m,admin:S.me,ts:Date.now()})}catch(err){alert('Failed: '+(err.message||err))}};
+document.addEventListener('click',async e=>{const g=e.target.closest('[data-s]');if(!g||!S.ready)return;const a=g.dataset.s,v=g.dataset.v,d=S.db;
+  try{
+    if(a==='search'){const q=$('#fq').value.trim();S.q=q;if(!q){S.hits=[];render();return}const r=await S.user.search(q);S.hits=r.filter(p=>!p.isMe);r.forEach(p=>S.names[p.id]=p.name);render()}
+    else if(a==='add'){const k=[S.me,v].sort();await d.collection('friendships').doc(fkey(S.me,v)).set({a:k[0],b:k[1],from:S.me,status:'pending',ts:Date.now()})}
+    else if(a==='acc')await d.collection('friendships').doc(v).update({status:'accepted'});
+    else if(a==='del')await d.collection('friendships').doc(v).delete();
+    else if(a==='rm'){if(await ask('Remove this friend?','Remove'))await d.collection('friendships').doc(v).delete()}
+    else if(a==='dm')openChat({type:'dm',id:'dm_'+fkey(S.me,v),title:nm(v),sub:isOn(v)?'Online':'Offline'});
+    else if(a==='grp'){const gr=S.groups.find(x=>x.id===v);openChat({type:'group',id:v,title:gr.name,sub:gr.members.map(nm).join(', ')})}
+    else if(a==='back'){closeChat();render()}
+    else if(a==='send')sendMsg();
+    else if(a==='leave'){if(await ask('Leave this group?','Leave')){const gr=S.groups.find(x=>x.id===S.chat.id);await d.collection('groups').doc(gr.id).update({members:gr.members.filter(m=>m!==S.me)});closeChat();render()}}
+    else if(a==='ng'){$('#gf').reset();$('#gm').innerHTML=S.fr.filter(f=>f.status==='accepted').map(f=>other(f)).map(id=>`<label style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" name="m" value="${id}" style="width:auto;margin:0"> ${esc(nm(id))}</label>`).join('')||'<div class="mu">Add friends first.</div>';$('#gd').showModal()}
+  }catch(err){alert('Failed: '+(err.message||err))}});
+document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;if(e.target.id==='msgin')sendMsg();else if(e.target.id==='fq'){const b=document.querySelector('[data-s=search]');if(b)b.click()}});
+
+load().then(()=>{render();initSocial()});
+</script></body></html>
